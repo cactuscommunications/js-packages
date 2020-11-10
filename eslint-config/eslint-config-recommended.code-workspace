@@ -1,0 +1,26 @@
+{
+	"folders": [
+	  {
+		"path": "."
+	  }
+	],
+	"settings": {
+	  "editor.defaultFormatter": "esbenp.prettier-vscode",
+	  "editor.formatOnSave": true,
+	  "workbench.colorCustomizations": {
+		"statusBar.background": "#32b820",
+		"statusBar.noFolderBackground": "#32b820",
+		"statusBar.debuggingBackground": "#32b820"
+	  },
+	  "javascript.suggest.autoImports": true
+	},
+	"extensions": {
+	  "recommendations": [
+		"dbaeumer.vscode-eslint",
+		"eamodio.gitlens",
+		"esbenp.prettier-vscode",
+	  ]
+	},
+
+  }
+  
