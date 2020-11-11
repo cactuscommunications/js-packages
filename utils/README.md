@@ -5,7 +5,7 @@
 ## Installation
 
 ```
-npm install --save eslint @cactus-tech/utils
+npm install --save @cactus-tech/utils
 ```
 
 ## Usage

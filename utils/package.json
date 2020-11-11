@@ -1,6 +1,6 @@
 {
   "name": "@cactus-tech/utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cactus Utilities",
   "main": "index.js",
   "engines": {
@@ -15,9 +15,6 @@
   ],
   "author": "Dhruv Gupta",
   "license": "MIT",
-  "dependencies": {
-    "js-sha256": "^0.9.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
