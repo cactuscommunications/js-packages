@@ -1,0 +1,16 @@
+{
+  // Change this to match your project
+  "include": ["lib/*.js"],
+  "exclude": ["lib/*.spec.js"],
+
+  "compilerOptions": {
+    "module": "commonjs",
+    "types": ["node"],
+    "downlevelIteration": true,
+    "allowJs": true,
+    "checkJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "types"
+  }
+}
