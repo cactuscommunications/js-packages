@@ -1,0 +1,59 @@
+{
+  "name": "@cactus-tech/build-serverless",
+  "version": "1.0.1",
+  "description": "This package helps to integrate ES6 NodeJS projects with AWS Lambda (SAM CLI) by compiling the source code with babel and copying other miscellaneous & configuration file to the build directory.",
+  "engines": {
+    "node": ">=12.19.0",
+    "npm": ">=6.14.8"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "npx jest --coverage --watchAll"
+  },
+  "bin": {
+    "build-serverless": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cactuscommunications/public-packages/build-serverless.git"
+  },
+  "keywords": [
+    "build",
+    "serverless",
+    "sam",
+    "cli",
+    "es6-sam-cli",
+    "babel-sam-cli",
+    "es6-express-sam-cli"
+  ],
+  "author": "Tejesh Jadhav <tejesh.jadhav@cactusglobal.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cactuscommunications/public-packages/issues"
+  },
+  "homepage": "https://github.com/cactuscommunications/public-packages/build-serverless#readme",
+  "dependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "aws-serverless-express": "^3.3.8",
+    "yargs": "^16.0.4-candidate.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@cactus-tech/eslint-config": "^1.0.0",
+    "@types/node": "^14.14.8",
+    "eslint": "^7.12.1",
+    "jest": "^26.6.3",
+    "mock-fs": "^4.13.0",
+    "typescript": "^4.0.5"
+  },
+  "peerDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "aws-serverless-express": "^3.3.8",
+    "yargs": "^16.0.4-candidate.0"
+  }
+}
