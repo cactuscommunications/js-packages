@@ -116,7 +116,7 @@ class BuildServerless {
    * @memberof BuildServerless
    */
   async _executeBabelCommand() {
-    const babelCommand = `npx babel ${this.sourceFolder} --out-dir ${this.outFolder} --copy-files --presets=@babel/preset-env`;
+    const babelCommand = `npx babel ${this.sourceFolder} --out-dir ${this.outFolder} --copy-files --presets=@babel/preset-env --plugins=@babel/plugin-transform-runtime`;
     await execAsync(babelCommand);
   }
 
