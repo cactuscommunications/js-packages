@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "module": "commonjs",
+      "target": "esnext",
+      "checkJs": true
+    },
+    "include": ["lib/**/*.js"],
+    "exclude": ["lib/*.spec.js","lib/stub/*.js"],
+
+  }
+}
