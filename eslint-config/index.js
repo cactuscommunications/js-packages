@@ -23,5 +23,6 @@ module.exports = {
     "no-underscore-dangle": ["error", { allowAfterThis: true }],
     "no-empty-function": "error",
     "no-else-return": "error",
+    "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
   },
 };
