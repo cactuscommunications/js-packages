@@ -3,13 +3,9 @@ const fs = require('fs');
 const { join } = require('path');
 const { promisify } = require('util');
 const yargs = require('yargs');
-const execAsync = promisify(require('child_process').exec);
-
 const { defaultFiles, yargsOptions } = require('./config');
 const toCamelCase = require('./utils');
-
 const accessAsync = promisify(fs.access);
-const copyFilesAsync = promisify(fs.copyFile);
 const mkdirAsync = promisify(fs.mkdir);
 const readFileAsync = promisify(fs.readFile);
 const writeFileAsync = promisify(fs.writeFile);
@@ -28,6 +24,7 @@ class BuildServerless {
    * @property {string} serviceName Name of the microservice. This will reflect in template.yaml
    * @property {string} serviceDescription Description of the microservice. This will reflect in template.yaml
    * @property {string[]} copyFiles Name of the files to be copied to output directory
+   * @property {string} lambdaFileType Temp and to be removed in sometime
    *
    */
 
@@ -49,11 +46,14 @@ class BuildServerless {
    */
   _setClassProperties(args) {
     const argv = args || this._getCliArguments();
-    this.outFolder = `serverless-${toCamelCase(argv.outputDir)}`;
+    this.outFolder = `serverless-${argv.outputDir}`;
     this.sourceFolder = argv.sourceDir;
     this.serviceName = argv.serviceName;
     this.serviceDescription = argv.serviceDescription;
     this.usualFilesToCopy = this._prepareFilesToBeCopied(argv.copyFiles);
+    this.lambdaFileType = argv.lambdaFileType;
+    this.copyFilesAsync = promisify(fs.copyFile);
+    this.execAsync = promisify(require('child_process').exec);
   }
 
   /**
@@ -117,7 +117,7 @@ class BuildServerless {
    */
   async _executeBabelCommand() {
     const babelCommand = `npx babel ${this.sourceFolder} --out-dir ${this.outFolder} --copy-files`;
-    await execAsync(babelCommand);
+    await this.execAsync(babelCommand);
   }
 
   /**
@@ -144,7 +144,7 @@ class BuildServerless {
       this.usualFilesToCopy.map(async (fileName) => {
         try {
           await accessAsync(join(process.cwd(), fileName));
-          await copyFilesAsync(fileName, join(this.outFolder, fileName));
+          await this.copyFilesAsync(fileName, join(this.outFolder, fileName));
         } catch (err) {
           if (err.code !== 'ENOENT') {
             issues.push(err);
@@ -176,17 +176,34 @@ class BuildServerless {
    * @memberof BuildServerless
    */
   async _generateFilesFromStub() {
-    const templateFile = await readFileAsync(join(__dirname, './stub/template.yaml.txt'));
+    await this._generateTemplateFileFromStub();
+    const lambdFile = this.lambdaFileType ? 'lambda-secret-manager' : 'lambda';
+    await this.copyFilesAsync(
+      join(__dirname, `stub/${lambdFile}.js.txt`),
+      join(this.outFolder, 'lambda.js'),
+    );
+  }
 
+  /**
+   * This fx is responsible for choosing templating depending on condition
+   */
+  async _generateTemplateFileFromStub() {
+    if (fs.existsSync(join(process.cwd(), 'template.yml'))) {
+      await this.copyFilesAsync(
+        join(process.cwd(), 'template.yml'),
+        `${this.outFolder}/template.yaml`,
+      );
+      console.log('Choosing user given template file!');
+      return true;
+    }
+    const templateFile = await readFileAsync(join(__dirname, './stub/template.yaml.txt'));
     const newTemplateFile = templateFile
       .toString()
       .replace(/{{ SERVICE_NAME }}/g, `${toCamelCase(this.serviceName)}`)
       .replace(/{{ SERVICE_DESCRIPTION }}/g, `${this.serviceDescription}`)
-      .replace(/{{ OUTPUT_DIR }}/g, this.outFolder);
+      .replace(/{{ CODE_URI }}/g, '.');
 
-    await writeFileAsync('template.yaml', newTemplateFile);
-
-    await copyFilesAsync(join(__dirname, 'stub/lambda.js.txt'), join(this.outFolder, 'lambda.js'));
+    await writeFileAsync(`${this.outFolder}/template.yaml`, newTemplateFile);
   }
 
   /**
@@ -196,7 +213,7 @@ class BuildServerless {
    */
   async _installAwsServerless() {
     const npmCommand = `npm i aws-serverless-express`;
-    await execAsync(npmCommand);
+    await this.execAsync(npmCommand);
   }
 
   /**

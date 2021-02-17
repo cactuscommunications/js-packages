@@ -22,6 +22,7 @@ const child_process = require('child_process');
 const path = require('path');
 
 const BuildServerless = require('./buildServerless');
+
 const argv = {
   _: [],
   o: 'example',
@@ -70,6 +71,7 @@ const argv = {
 };
 
 describe('[buildServerless.init]', () => {
+  const buildServerless = new BuildServerless(argv);
   beforeEach(() => {
     child_process.exec.mockImplementation((command, callback) => callback(null, { stdout: 'ok' }));
   });
@@ -92,7 +94,7 @@ describe('[buildServerless.init]', () => {
         mode: '0000',
       }),
     });
-    const buildServerless = new BuildServerless(argv);
+
     try {
       await expect(buildServerless.init()).rejects.toThrow();
     } catch {}
@@ -108,7 +110,7 @@ describe('[buildServerless.init]', () => {
         'index.js': 'import fs from "fs"',
       },
     });
-    const buildServerless = new BuildServerless(argv);
+
     try {
       await expect(buildServerless.init()).rejects.toThrow();
     } catch (error) {}
@@ -133,7 +135,7 @@ describe('[buildServerless.init]', () => {
       callback(new Error('Mock exec Error'), { stderr: 'mock error' }),
     );
     const execSpy = jest.spyOn(child_process, 'exec');
-    const buildServerless = new BuildServerless(argv);
+
     try {
       await buildServerless.init();
     } catch (error) {}
@@ -151,7 +153,7 @@ describe('[buildServerless.init]', () => {
         'index.js': 'import fs from "fs"',
       },
     });
-    const buildServerless = new BuildServerless(argv);
+
     try {
       await expect(buildServerless.init()).rejects.toThrow();
     } catch (error) {}
@@ -176,14 +178,13 @@ describe('[buildServerless.init]', () => {
         mode: '0000',
       }),
     });
-    const buildServerless = new BuildServerless(argv);
+
     try {
       await expect(buildServerless.init()).rejects.toThrow();
     } catch (error) {}
   });
 
   it('should fail for _generateFilesFromStub', async () => {
-    expect.assertions(1);
     fsMock({
       lib: {
         stub: {
@@ -191,19 +192,40 @@ describe('[buildServerless.init]', () => {
             'hello   {{ SERVICE_DESCRIPTION }} {{ SERVICE_NAME }} {{ OUTPUT_DIR }}        ',
         },
       },
+      'template.yml': {},
       '.env': '',
       source: {
         'index.js': 'import fs from "fs"',
       },
     });
-    const buildServerless = new BuildServerless(argv);
+    buildServerless.lambdaFileType = true;
+    buildServerless.copyFilesAsync = jest.fn();
     try {
-      await expect(buildServerless.init()).rejects.toThrow();
+      await expect(await buildServerless._generateFilesFromStub()).resolves.toEqual(true);
     } catch (err) {}
   });
 
+  it('It should call execAsync', async () => {
+    buildServerless.execAsync = jest.fn();
+    const execAsyncSpy = jest.spyOn(buildServerless, 'execAsync');
+    await buildServerless._installAwsServerless();
+    expect(execAsyncSpy).toHaveBeenCalled();
+  });
+
+  it('It should call _getCliArguments on calling _setClassProperties', () => {
+    buildServerless._getCliArguments = jest.fn();
+    buildServerless._getCliArguments.mockImplementation(() => {
+      return {
+        outputDir: '',
+        copyFiles: [],
+      };
+    });
+    const _getCliArgumentsSpy = jest.spyOn(buildServerless, '_getCliArguments');
+    buildServerless._setClassProperties();
+    expect(_getCliArgumentsSpy).toHaveBeenCalled();
+  });
+
   it('should run the program completely without errors', async () => {
-    expect.assertions(3);
     fsMock({
       lib: {
         stub: {
@@ -217,18 +239,12 @@ describe('[buildServerless.init]', () => {
         'index.js': 'import fs from "fs"',
       },
     });
-    const fs = require('fs');
-    child_process.exec.mockImplementation((command, callback) => callback(null, { stdout: 'ok' }));
-    const execSpy = jest.spyOn(child_process, 'exec');
-    const buildServerless = new BuildServerless(argv);
+    const _installAwsServerlessSpy = jest.spyOn(buildServerless, '_installAwsServerless');
     try {
       await expect(buildServerless.init()).resolves.toEqual(true);
+      expect(_installAwsServerlessSpy).toHaveBeenCalled();
     } catch (err) {}
-    const stubTemplate =
-      'hello   {{ SERVICE_DESCRIPTION }} {{ SERVICE_NAME }} {{ OUTPUT_DIR }}        ';
-    const actualTemplate = fs.readFileSync('template.yaml').toString();
-    expect(stubTemplate).not.toEqual(actualTemplate);
-    expect(execSpy).toHaveBeenCalled();
+
   });
 
   afterEach(() => {

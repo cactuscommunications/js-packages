@@ -25,6 +25,7 @@ const defaultFiles = [
  * @property {option} yargsOptions.n
  * @property {option} yargsOptions.d
  * @property {option} yargsOptions.c
+ * @property {option} yargsOptions.l
  */
 
 /** @type {yargsOptions} */
@@ -59,6 +60,12 @@ const yargsOptions = {
     alias: 'copy-files',
     description: 'list of files to copy to output dir',
     default: [...defaultFiles],
+    demandOption: false,
+  },
+  l: {
+    type: 'string',
+    alias: 'lambda-file-type',
+    description: 'This is temporary once we finalize lambda content we will remove this',
     demandOption: false,
   },
 };
