@@ -38,7 +38,7 @@
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
-    "aws-serverless-express": "^3.3.8",
+    "@vendia/serverless-express": "^4.3.0",
     "yargs": "^16.0.4-candidate.0"
   },
   "devDependencies": {
@@ -54,7 +54,7 @@
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
-    "aws-serverless-express": "^3.3.8",
+    "@vendia/serverless-express": "^4.3.0",
     "yargs": "^16.0.4-candidate.0"
   }
 }

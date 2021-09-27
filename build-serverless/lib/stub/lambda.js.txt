@@ -1,18 +1,20 @@
-'use strict';
- 
+"use strict";
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
- 
-Object.defineProperty(exports, "__esModule", {
- value: true
-});
-exports.handler = handler;
- 
-var _awsServerlessExpress = require("aws-serverless-express");
- 
+
+var _serverlessExpress = _interopRequireDefault(require("@vendia/serverless-express"));
+
 var _app = _interopRequireDefault(require("./app"));
- 
-var server = (0, _awsServerlessExpress.createServer)(_app["default"]);
- 
-function handler(event, context) {
- (0, _awsServerlessExpress.proxy)(server, event, context);
-}
+
+var serverlessApp = (0, _serverlessExpress["default"])({
+ app: _app["default"]
+});
+
+var handler = function handler(event, context) {
+ // eslint-disable-next-line no-console
+ console.log('EVENT', JSON.stringify(event)); // eslint-disable-next-line no-console
+
+ return serverlessApp(event, context);
+};
+
+exports.handler = handler;
