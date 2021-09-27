@@ -212,7 +212,7 @@ class BuildServerless {
    * @memberof BuildServerless
    */
   async _installAwsServerless() {
-    const npmCommand = `npm i aws-serverless-express`;
+    const npmCommand = `npm i @vendia/serverless-express`;
     await this.execAsync(npmCommand);
   }
 

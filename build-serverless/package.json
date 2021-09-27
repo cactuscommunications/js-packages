@@ -1,6 +1,6 @@
 {
   "name": "@cactus-tech/build-serverless",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "This package helps to integrate ES6 NodeJS projects with AWS Lambda (SAM CLI) by compiling the source code with babel and copying other miscellaneous & configuration file to the build directory.",
   "engines": {
     "node": ">=12.19.0",
@@ -38,7 +38,7 @@
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
-    "aws-serverless-express": "^3.3.8",
+    "@vendia/serverless-express": "^4.3.0",
     "yargs": "^16.0.4-candidate.0"
   },
   "devDependencies": {
